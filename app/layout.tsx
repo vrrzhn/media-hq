@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Media Ranker",
+  title: "Media HQ",
   description: "Track and rank your favorite movies",
 };
 
