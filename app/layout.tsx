@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Media HQ",
-  description: "Track and rank your favorite movies",
+  description: "Track and rank your favorite movies and shows.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

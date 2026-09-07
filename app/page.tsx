@@ -172,6 +172,17 @@ export default function HomePage() {
 
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // set initial state correctly on mount
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   // Fetch all home data with graceful fallbacks
   useEffect(() => {
     let isMounted = true
@@ -400,7 +411,9 @@ export default function HomePage() {
         <Link
           href="/"
           onClick={() => setSearchQuery('')}
-          className="group flex items-center gap-3 transition transform hover:scale-105 focus:outline-none"
+          className={`group flex items-center gap-3 transition-opacity duration-300 focus:outline-none ${
+            isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
         >
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-emerald-400 via-sky-400 to-purple-500 p-[2px] shadow-lg shadow-purple-500/20">
             <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center">
