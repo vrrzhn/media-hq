@@ -406,7 +406,7 @@ export default function HomePage() {
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
             <span className="text-amber-300">MEDIA</span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-amber-300 via-emerald-400 via-sky-400 to-purple-400 ml-1.5">
-              RANKER
+              HQ
             </span>
           </h1>
         </Link>

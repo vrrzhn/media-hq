@@ -128,7 +128,7 @@ export default function Navbar() {
         <span className="font-black text-xl tracking-tight hidden sm:inline-block">
           <span className="text-amber-300">MEDIA</span>
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-amber-300 via-emerald-400 via-sky-400 to-purple-400 ml-1">
-            RANKER
+            HQ
           </span>
         </span>
       </Link>
