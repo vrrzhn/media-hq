@@ -108,7 +108,7 @@ function MediaCard({ movie }: MediaCardProps) {
       href={`/${targetRoute}/${isEpisode ? movie.show_id : (movie.tmdb_id || movie.id)}`}
       className="flex-none w-36 sm:w-44 group transition-transform duration-300 hover:scale-105 focus:outline-none focus:scale-105"
     >
-      <div className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 shadow-xl mb-2">
+       <div className="relative aspect-[2/3] w-full rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 shadow-xl mb-2">
         {posterUrl ? (
           <img
             src={posterUrl}
@@ -387,9 +387,16 @@ export default function HomePage() {
     : null
 
   return (
-    <main className="min-h-screen bg-black text-white pb-24">
+    <main className="min-h-screen bg-zinc-950 text-white pb-24 relative">
+
+       {/* AMBIENT ORBS & GRID — homepage's own variant */}
+      <div className="fixed -top-40 -left-40 w-[24rem] h-[24rem] bg-amber-500/8 rounded-full blur-[140px] pointer-events-none animate-blob z-[5]" />
+      <div className="fixed top-1/3 -right-40 w-[24rem] h-[24rem] bg-purple-600/8 rounded-full blur-[140px] pointer-events-none animate-blob animation-delay-2000 z-[5]" />
+      <div className="fixed bottom-0 left-1/3 w-[24rem] h-[24rem] bg-emerald-500/6 rounded-full blur-[140px] pointer-events-none animate-blob animation-delay-4000 z-[5]" />
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#27272a15_1px,transparent_1px),linear-gradient(to_bottom,#27272a15_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_50%,transparent_100%)] pointer-events-none z-[5]" />
+
       {/* TOP NAVIGATION HEADER & SEARCH BAR */}
-      <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-xl border-transparent px-6 py-5 flex flex-col items-center gap-5 shadow-2xl">
+      <header className="sticky top-0 z-50 w-full bg-transparent px-6 py-5 flex flex-col items-center gap-5">
         <Link
           href="/"
           onClick={() => setSearchQuery('')}
@@ -566,16 +573,43 @@ export default function HomePage() {
         <>
           {/* TOP 10 HERO BANNER */}
           {userTopTen.length > 0 && (
-            <div className="relative w-full min-h-[520px] py-10 overflow-hidden flex flex-col justify-between">
+            <div className="relative w-full min-h-[520px] py-10 flex flex-col justify-between">
               {activeBackdrop && (
-                <div className="absolute inset-0 z-0 pointer-events-none">
-                  <img
-                    src={activeBackdrop}
-                    alt={activeTopTenItem?.title || 'Backdrop'}
-                    className="w-full h-full object-cover opacity-80 scale-105 transition-all duration-700 ease-out"
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                  <div className="absolute inset-0 scale-105 transition-transform duration-700 ease-out">
+                    <img
+                      src={activeBackdrop}
+                      alt={activeTopTenItem?.title || 'Backdrop'}
+                      className="w-full h-full object-cover opacity-90"
+                      style={{
+                        maskImage: 'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 65%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.15) 85%, transparent 95%, transparent 100%)',
+                        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, transparent 5%, rgba(0,0,0,0.15) 15%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.7) 35%, black 45%, black 55%, rgba(0,0,0,0.7) 65%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.15) 85%, transparent 95%, transparent 100%)'
+                      }}
+                    />
+                  </div>
+                  <div
+                    className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
+                    style={{
+                      backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")"
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/70" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/50 via-transparent to-zinc-950/50" />
+
+                  {/* BOTTOM FADE — blends backdrop into the page background below the hero */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(9,9,11,0.7) 60%, rgba(9,9,11,1) 85%, rgba(9,9,11,1) 100%)'
+                    }}
+                  />
+
+                  {/* TOP FADE — blends backdrop into the header/nav area */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(to top, transparent 0%, transparent 40%, rgba(9,9,11,0.7) 60%, rgba(9,9,11,1) 85%, rgba(9,9,11,1) 100%)'
+                    }}
+                  />
                 </div>
               )}
 
