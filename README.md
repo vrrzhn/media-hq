@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## MEDIA HQ
 
-## Getting Started
+A modern, full-stack media discovery platform to explore movies and TV shows, view detailed metadata, and maintain personalized watchlists and ratings.
 
-First, run the development server:
+Built with **Next.js**, **Supabase**, and the **TMDB API**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* **Media Discovery:** Search and explore a vast database of movies and TV shows using the TMDB API.
+* **User Authentication:** Secure sign-up and login powered by Supabase Auth.
+* **Personalized Watchlists:** Save your favorite titles to a custom watchlist for later viewing and order your list to your pleasing.
+* **Rating System:** Leave personal ratings and reviews for the media you've watched, keeping track of your favourite media.
+* **Responsive Design:** A fully responsive, modern user interface built with Tailwind CSS.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **Framework:** [Next.js](https://nextjs.org/) (App Router)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS
+* **Database & Auth:** [Supabase](https://supabase.com/)
+* **External Data:** [TMDB API](https://developer.themoviedb.org/docs)
 
-## Learn More
+## 🚀 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+Follow these instructions to set up the project locally on your machine.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Make sure you have the following installed and set up:
+* [Node.js](https://nodejs.org/) (v18 or higher)
+* A [Supabase](https://supabase.com/) account and a new project
+* A [TMDB (The Movie Database) API Key](https://developer.themoviedb.org/docs/getting-started)
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/vrrzhn/media-hq.git](https://github.com/vrrzhn/media-hq.git)
+   cd media-hq
