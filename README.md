@@ -1,5 +1,7 @@
 ## MEDIA HQ
 
+http://mediahq.vercel.app/
+
 A modern, full-stack media discovery platform to explore movies and TV shows, view detailed metadata, and maintain personalized watchlists and ratings.
 
 Built with **Next.js**, **Supabase**, and the **TMDB API**.
