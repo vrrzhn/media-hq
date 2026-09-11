@@ -73,6 +73,43 @@ function getReleaseYear(item: TMDBMedia | UserTopTenItem | Record<string, any>):
   return match ? match[0] : str.split('-')[0] || null
 }
 
+// --- HELPER FUNCTION TO STYLE TOP 10 NUMBERS ---
+function getRankNumberStyle(rank: number, hasItem: boolean) {
+  if (!hasItem) {
+    return {
+      sizeClasses: 'text-6xl sm:text-7xl',
+      colorClasses: 'text-transparent bg-clip-text bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-900',
+      glow: ''
+    }
+  }
+  if (rank === 1) {
+    return {
+      sizeClasses: 'text-9xl sm:text-[10rem]',
+      colorClasses: 'gold-shimmer text-transparent bg-clip-text',
+      glow: 'drop-shadow-[0_0_8px_rgba(251,191,36,0.35)]'
+    }
+  }
+  if (rank === 2) {
+    return {
+      sizeClasses: 'text-8xl sm:text-9xl',
+      colorClasses: 'text-transparent bg-clip-text bg-gradient-to-b from-slate-100 via-slate-300 to-slate-500',
+      glow: 'drop-shadow-[0_0_8px_rgba(226,232,240,0.3)]'
+    }
+  }
+  if (rank === 3) {
+    return {
+      sizeClasses: 'text-7xl sm:text-8xl',
+      colorClasses: 'text-transparent bg-clip-text bg-gradient-to-b from-orange-300 via-orange-500 to-orange-800',
+      glow: 'drop-shadow-[0_0_7px_rgba(251,146,60,0.3)]'
+    }
+  }
+  return {
+    sizeClasses: 'text-6xl sm:text-7xl',
+    colorClasses: 'text-transparent bg-clip-text bg-gradient-to-b from-amber-300 via-rose-400 to-purple-500',
+    glow: ''
+  }
+}
+
 // --- STANDALONE MEDIA CARD COMPONENT ---
 function MediaCard({ movie }: MediaCardProps) {
   const isTv = movie.media_type === 'tv' || movie.type === 'tv'
@@ -174,6 +211,8 @@ export default function HomePage() {
 
   const [isScrolled, setIsScrolled] = useState(false)
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30)
@@ -224,7 +263,7 @@ export default function HomePage() {
 
         // Fetch User's Top Rated Media
         const { data: { user } } = await supabase.auth.getUser()
-
+        if (isMounted) setIsLoggedIn(!!user)
         if (user && isMounted) {
           const { data: topTen } = await supabase
             .from('media')
@@ -585,7 +624,7 @@ export default function HomePage() {
       ) : (
         <>
           {/* TOP 10 HERO BANNER */}
-          {userTopTen.length > 0 && (
+          {(isLoggedIn ? userTopTen.length > 0 : true) && (
             <div className="relative w-full min-h-[520px] py-10 flex flex-col justify-between">
               {activeBackdrop && (
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -637,30 +676,53 @@ export default function HomePage() {
                     </h2>
                   </div>
 
-                  {activeTopTenItem && (
+                  {isLoggedIn ? (
+                    activeTopTenItem && (
+                      <div className="flex flex-col items-start sm:items-end text-left sm:text-right gap-2 max-w-xl">
+                        <div className="flex items-center gap-2">
+                          <span className="bg-amber-400 text-black px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider shadow-md">
+                            #{ (hoveredTopTenIndex < topTenList.length ? hoveredTopTenIndex : 0) + 1 } IN RANKING
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wider ${
+                            activeTopTenItem.type === 'episode'
+                              ? 'bg-emerald-600/90'
+                              : activeTopTenItem.type === 'tv'
+                              ? 'bg-sky-600/90'
+                              : 'bg-purple-600/90'
+                          }`}>
+                            {activeTopTenItem.type === 'episode' ? 'EPISODE' : activeTopTenItem.type === 'tv' ? 'TV SHOW' : 'MOVIE'}
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight drop-shadow-md line-clamp-1">
+                          {activeTopTenItem.title}
+                        </h3>
+
+                        <div className="flex items-center gap-3 text-xs sm:text-sm font-semibold text-zinc-300 mt-1">
+                          <span className="text-amber-300 font-bold bg-black/60 px-3 py-1 rounded-xl border border-amber-300/40 backdrop-blur-md">
+                            ⭐ Your Rating: {Number(activeTopTenItem.user_rating).toFixed(1)} / 10
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  ) : (
                     <div className="flex flex-col items-start sm:items-end text-left sm:text-right gap-2 max-w-xl">
                       <div className="flex items-center gap-2">
-                        <span className="bg-amber-400 text-black px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider shadow-md">
-                          #{ (hoveredTopTenIndex < topTenList.length ? hoveredTopTenIndex : 0) + 1 } IN RANKING
-                        </span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wider ${
-                          activeTopTenItem.type === 'episode'
-                            ? 'bg-emerald-600/90'
-                            : activeTopTenItem.type === 'tv'
-                            ? 'bg-sky-600/90'
-                            : 'bg-purple-600/90'
-                        }`}>
-                          {activeTopTenItem.type === 'episode' ? 'EPISODE' : activeTopTenItem.type === 'tv' ? 'TV SHOW' : 'MOVIE'}
-                        </span>
+                        <Link
+                          href="/login"
+                          className="bg-amber-400 text-black px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider shadow-md hover:bg-amber-300 transition"
+                        >
+                          GET STARTED
+                        </Link>
                       </div>
 
-                      <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight drop-shadow-md line-clamp-1">
-                        {activeTopTenItem.title}
+                      <h3 className="text-xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">
+                        Sign up to build your own Top 10
                       </h3>
 
                       <div className="flex items-center gap-3 text-xs sm:text-sm font-semibold text-zinc-300 mt-1">
                         <span className="text-amber-300 font-bold bg-black/60 px-3 py-1 rounded-xl border border-amber-300/40 backdrop-blur-md">
-                          ⭐ Your Rating: {Number(activeTopTenItem.user_rating).toFixed(1)} / 10
+                          ⭐ Your Rating: ???
                         </span>
                       </div>
                     </div>
@@ -673,7 +735,7 @@ export default function HomePage() {
                     {topTenList.length} {topTenList.length === 1 ? 'Title' : 'Titles'}
                   </span>
 
-                  {activeTab === 'all' && (
+                  {isLoggedIn && activeTab === 'all' && (
                     <label className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/70 border border-zinc-700/80 cursor-pointer text-xs font-semibold text-zinc-300 hover:text-white transition select-none backdrop-blur-md shadow-xl">
                       <input
                         type="checkbox"
@@ -689,75 +751,91 @@ export default function HomePage() {
                   )}
                 </div>
 
-                {/* INTERACTIVE NUMBERED CAROUSEL */}
-                {topTenList.length > 0 ? (
-                  <div className="flex gap-4 overflow-x-auto pt-3 pb-4 scrollbar-thin scrollbar-thumb-zinc-800 items-start">
-                    {topTenList.map((media, index) => {
-                      const isFirst = index === 0
-                      const isHovered = index === hoveredTopTenIndex
-                      const isTv = media.type === 'tv'
-                      const isEpisode = media.type === 'episode'
-                      const targetRoute = isTv || isEpisode ? 'tv' : 'movie'
-                      const linkId = isEpisode ? media.show_id : (media.tmdb_id || media.id)
-                      
-                      const releaseYear = getReleaseYear(media)
+                {/* INTERACTIVE TOP 10 NUMBERED CAROUSEL */}
+                {(isLoggedIn ? topTenList.length > 0 : true) ? (
+                  <div className="flex gap-4 overflow-x-auto pt-6 pb-4 pl-4 pr-8 sm:pl-6 sm:pr-10 scrollbar-thin scrollbar-thumb-zinc-800 items-start">
+                    {Array.from({ length: 10 }).map((_, i) => {
+                      const rank = i + 1
+                      const media = isLoggedIn ? topTenList[i] : null
+                      const hasItem = isLoggedIn && !!media
+                      const styleHasItem = isLoggedIn ? hasItem : true
+                      const { sizeClasses, colorClasses, glow } = getRankNumberStyle(rank, styleHasItem)
+                      const isHovered = isLoggedIn && i === hoveredTopTenIndex
 
-                      const posterUrl = media.poster_path
-                        ? media.poster_path.startsWith('http')
-                          ? media.poster_path
-                          : `https://image.tmdb.org/t/p/w342${media.poster_path}`
-                        : null
-
-                      return (
-                        <Link
-                          key={media.id}
-                          href={`/${targetRoute}/${isEpisode ? media.show_id : (media.tmdb_id || media.id)}`}
-                          onMouseEnter={() => setHoveredTopTenIndex(index)}
-                          onFocus={() => setHoveredTopTenIndex(index)}
-                          className="flex-none flex items-center gap-2 group/card cursor-pointer focus:outline-none"
-                        >
-                          <span className={`text-6xl sm:text-7xl font-black tracking-tighter select-none leading-none transition-transform duration-300 group-hover/card:scale-110 ${
-                            isFirst
-                              ? 'text-transparent bg-clip-text bg-gradient-to-b from-amber-300 via-rose-400 to-purple-500 drop-shadow-[0_4px_12px_rgba(251,191,36,0.4)]'
-                              : 'text-transparent bg-clip-text bg-gradient-to-b from-zinc-200 via-zinc-400 to-zinc-700'
-                          }`}>
-                            {index + 1}
+                      const numberBox = (
+                        <div className="relative z-10 flex-none w-16 sm:w-20 h-[216px] sm:h-[264px] -mr-3 sm:-mr-4 flex items-center justify-center overflow-visible pointer-events-none">
+                          <span className={`${sizeClasses} ${colorClasses} ${glow} proportional-nums font-black tracking-tighter select-none leading-none transition-transform duration-300 group-hover/card:scale-110`}>
+                            {rank}
                           </span>
+                        </div>
+                      )
 
-                          <div className="w-36 sm:w-44 flex flex-col">
-                            <div className={`relative aspect-[2/3] w-full rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 shadow-xl mb-2 transition-all duration-300 ${
-                              isHovered ? 'ring-2 ring-amber-300 shadow-xl shadow-amber-400/20 scale-105 opacity-100' : 'opacity-85 hover:opacity-100'
-                            }`}>
-                              {posterUrl ? (
-                                <img
-                                  src={posterUrl}
-                                  alt={media.title}
-                                  loading="lazy"
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xs text-zinc-500">
-                                  No Poster
-                                </div>
-                              )}
-                              <div className={`absolute top-2.5 left-2.5 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wider ${
-                                isEpisode ? 'bg-emerald-600/90' : isTv ? 'bg-sky-600/90' : 'bg-purple-600/90'
+                      if (hasItem && media) {
+                        const isTv = media.type === 'tv'
+                        const isEpisode = media.type === 'episode'
+                        const targetRoute = isTv || isEpisode ? 'tv' : 'movie'
+                        const releaseYear = getReleaseYear(media)
+                        const posterUrl = media.poster_path
+                          ? media.poster_path.startsWith('http')
+                            ? media.poster_path
+                            : `https://image.tmdb.org/t/p/w342${media.poster_path}`
+                          : null
+
+                        return (
+                          <Link
+                            key={media.id}
+                            href={`/${targetRoute}/${isEpisode ? media.show_id : (media.tmdb_id || media.id)}`}
+                            onMouseEnter={() => setHoveredTopTenIndex(i)}
+                            onFocus={() => setHoveredTopTenIndex(i)}
+                            className="flex-none flex items-start gap-2 group/card cursor-pointer focus:outline-none"
+                          >
+                            {numberBox}
+
+                            <div className="w-36 sm:w-44 flex flex-col">
+                              <div className={`relative aspect-[2/3] w-full rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 shadow-xl mb-2 transition-all duration-300 ${
+                                isHovered ? 'ring-2 ring-amber-300 shadow-xl shadow-amber-400/20 scale-105 opacity-100' : 'opacity-85 hover:opacity-100'
                               }`}>
-                                {isEpisode ? 'EPISODE' : isTv ? 'TV' : 'MOVIE'}
+                                {posterUrl ? (
+                                  <img
+                                    src={posterUrl}
+                                    alt={media.title}
+                                    loading="lazy"
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-xs text-zinc-500">
+                                    No Poster
+                                  </div>
+                                )}
+                                <div className={`absolute top-2.5 left-2.5 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wider ${
+                                  isEpisode ? 'bg-emerald-600/90' : isTv ? 'bg-sky-600/90' : 'bg-purple-600/90'
+                                }`}>
+                                  {isEpisode ? 'EPISODE' : isTv ? 'TV' : 'MOVIE'}
+                                </div>
+                                <div className="absolute top-2.5 right-2.5 bg-black/90 border border-amber-300/80 px-2 py-0.5 rounded-md text-[11px] font-black text-amber-300 shadow-lg backdrop-blur-md">
+                                  ⭐ {Number(media.user_rating).toFixed(1)}
+                                </div>
                               </div>
-                              <div className="absolute top-2.5 right-2.5 bg-black/90 border border-amber-300/80 px-2 py-0.5 rounded-md text-[11px] font-black text-amber-300 shadow-lg backdrop-blur-md">
-                                ⭐ {Number(media.user_rating).toFixed(1)}
-                              </div>
-                            </div>
 
-                            <p className="font-semibold text-sm truncate text-white group-hover/card:text-amber-300 transition-colors">
-                              {media.title}
-                            </p>
-                            <p className="text-xs text-zinc-500">
-                              {releaseYear || 'N/A'}
-                            </p>
+                              <p className="font-semibold text-sm truncate text-white group-hover/card:text-amber-300 transition-colors">
+                                {media.title}
+                              </p>
+                              <p className="text-xs text-zinc-500">
+                                {releaseYear || 'N/A'}
+                              </p>
+                            </div>
+                          </Link>
+                        )
+                      }
+
+                      // Empty slot — dull placeholder (logged-in gaps) or enticing locked slot (logged-out)
+                      return (
+                        <div key={`empty-${i}`} className="flex-none flex items-start gap-2">
+                          {numberBox}
+                          <div className="w-36 sm:w-44 aspect-[2/3] rounded-2xl border border-zinc-800/80 bg-zinc-900 flex items-center justify-center opacity-60">
+                            <span className="text-2xl">{isLoggedIn ? '☆' : '🔒'}</span>
                           </div>
-                        </Link>
+                        </div>
                       )
                     })}
                   </div>
