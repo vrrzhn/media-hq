@@ -42,3 +42,14 @@ body {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+
+@keyframes goldShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gold-shimmer {
+  background-image: linear-gradient(90deg, #fde68a, #f59e0b, #fbbf24, #fde68a);
+  background-size: 300% 300%;
+  animation: goldShimmer 2.5s ease-in-out infinite;
+}
