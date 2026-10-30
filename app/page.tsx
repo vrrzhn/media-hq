@@ -106,7 +106,7 @@ function getRankNumberStyle(rank: number, hasItem: boolean) {
   return {
     sizeClasses: 'text-6xl sm:text-7xl',
     colorClasses: 'text-transparent bg-clip-text bg-gradient-to-b from-amber-300 via-rose-400 to-purple-500',
-    glow: ''
+    glow: 'drop-shadow-[0_0_10px_rgba(0,0,0,0.9)]'
   }
 }
 
@@ -209,18 +209,7 @@ export default function HomePage() {
 
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const [isScrolled, setIsScrolled] = useState(false)
-
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // set initial state correctly on mount
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   // Fetch all home data with graceful fallbacks
   useEffect(() => {
@@ -446,13 +435,11 @@ export default function HomePage() {
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#27272a15_1px,transparent_1px),linear-gradient(to_bottom,#27272a15_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_50%,#000_50%,transparent_100%)] pointer-events-none z-[5]" />
 
       {/* TOP NAVIGATION HEADER & SEARCH BAR */}
-      <header className="sticky top-0 z-50 w-full bg-transparent px-6 py-5 flex flex-col items-center gap-5">
+      <header className="relative z-20 w-full bg-transparent px-6 py-5 flex flex-col items-center gap-5">
         <Link
           href="/"
           onClick={() => setSearchQuery('')}
-          className={`group flex items-center gap-3 transition-opacity duration-300 focus:outline-none ${
-            isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}
+          className="group flex items-center gap-3 focus:outline-none"
         >
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-emerald-400 via-sky-400 to-purple-500 p-[2px] shadow-lg shadow-purple-500/20">
             <div className="w-full h-full bg-black rounded-[14px] flex items-center justify-center">
@@ -763,8 +750,8 @@ export default function HomePage() {
                       const isHovered = isLoggedIn && i === hoveredTopTenIndex
 
                       const numberBox = (
-                        <div className="relative z-10 flex-none w-16 sm:w-20 h-[216px] sm:h-[264px] -mr-3 sm:-mr-4 flex items-center justify-center overflow-visible pointer-events-none">
-                          <span className={`${sizeClasses} ${colorClasses} ${glow} proportional-nums font-black tracking-tighter select-none leading-none transition-transform duration-300 group-hover/card:scale-110`}>
+                        <div className="relative flex-none w-24 sm:w-28 h-[216px] sm:h-[264px] mr-1 sm:mr-2 flex items-center justify-end pointer-events-none">
+                          <span className={`${sizeClasses} ${colorClasses} ${glow} font-black tracking-tighter select-none leading-none transition-transform duration-300 origin-right group-hover/card:scale-110`}>
                             {rank}
                           </span>
                         </div>
@@ -787,11 +774,11 @@ export default function HomePage() {
                             href={`/${targetRoute}/${isEpisode ? media.show_id : (media.tmdb_id || media.id)}`}
                             onMouseEnter={() => setHoveredTopTenIndex(i)}
                             onFocus={() => setHoveredTopTenIndex(i)}
-                            className="flex-none flex items-start gap-2 group/card cursor-pointer focus:outline-none"
+                            className="flex-none flex items-start gap-0 group/card cursor-pointer focus:outline-none"
                           >
                             {numberBox}
 
-                            <div className="w-36 sm:w-44 flex flex-col">
+                            <div className="w-36 sm:w-44 flex flex-col relative z-20">
                               <div className={`relative aspect-[2/3] w-full rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900 shadow-xl mb-2 transition-all duration-300 ${
                                 isHovered ? 'ring-2 ring-amber-300 shadow-xl shadow-amber-400/20 scale-105 opacity-100' : 'opacity-85 hover:opacity-100'
                               }`}>
@@ -830,9 +817,9 @@ export default function HomePage() {
 
                       // Empty slot — dull placeholder (logged-in gaps) or enticing locked slot (logged-out)
                       return (
-                        <div key={`empty-${i}`} className="flex-none flex items-start gap-2">
+                        <div key={`empty-${i}`} className="flex-none flex items-start gap-0">
                           {numberBox}
-                          <div className="w-36 sm:w-44 aspect-[2/3] rounded-2xl border border-zinc-800/80 bg-zinc-900 flex items-center justify-center opacity-60">
+                            <div className="w-36 sm:w-44 aspect-[2/3] rounded-2xl border border-zinc-800/80 bg-zinc-900 flex items-center justify-center opacity-60 relative z-20">
                             <span className="text-2xl">{isLoggedIn ? '☆' : '🔒'}</span>
                           </div>
                         </div>
